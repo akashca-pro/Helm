@@ -1,0 +1,17 @@
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  hostname: task-2-48-akash.local
+  path: /
+  pathType: Prefix

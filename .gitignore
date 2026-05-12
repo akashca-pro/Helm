@@ -1,0 +1,17 @@
+# Helm
+*.tgz
+charts/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.*

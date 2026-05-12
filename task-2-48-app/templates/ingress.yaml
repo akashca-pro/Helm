@@ -1,0 +1,21 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "task-2-48-app.fullname" . }}
+  labels:
+    {{- include "task-2-48-app.labels" . | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            pathType: {{ .Values.ingress.pathType }}
+            backend:
+              service:
+                name: {{ include "task-2-48-app.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+{{- end }}
