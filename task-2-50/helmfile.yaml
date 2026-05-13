@@ -1,0 +1,15 @@
+helmDefaults:
+  atomic: true
+  wait: true
+
+releases:
+  - name: task-2-50-release
+
+    namespace: akash-c-a
+
+    kubeContext: akash-c-a@kubenine
+
+    chart: ../task-2-49-chart
+
+    values:
+      - values.yaml

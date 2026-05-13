@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: latest
+  pullPolicy: IfNotPresent
+
+containerPort: 80
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: task-2-50-akash-c-a.local
+  path: /
+
+config:
+  APP_ENV: helmfile
