@@ -1,0 +1,66 @@
+grafana:
+  adminPassword: admin123
+
+  additionalDataSources:
+    - name: Loki
+      uid: loki
+      type: loki
+      access: proxy
+      url: http://akash-loki-stack:3100
+
+  ingress:
+    enabled: true
+
+    ingressClassName: nginx
+
+    hosts:
+      - grafana.codexakash.space
+
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.codexakash.space
+
+  persistence:
+    enabled: true
+
+    size: 5Gi
+
+alertmanager:
+  enabled: false
+
+# Reuse the cluster-wide Prometheus Operator already running on Civo.
+# Deploying another operator in this shared cluster causes the Prometheus
+# statefulset to churn and prevents stable local port-forward access.
+prometheusOperator:
+  enabled: false
+
+prometheus:
+  ingress:
+    enabled: true
+
+    ingressClassName: nginx
+
+    hosts:
+      - prometheus.codexakash.space
+
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.codexakash.space
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+
+          resources:
+            requests:
+              storage: 10Gi
+
+nodeExporter:
+  enabled: false
+
+prometheus-node-exporter:
+  enabled: false
