@@ -28,6 +28,7 @@ releases:
 
   - name: cert-manager
     namespace: cert-manager
+    createNamespace: true
     kubeContext: akash-c-a@kubenine
     chart: jetstack/cert-manager
     version: v1.18.2
@@ -35,7 +36,8 @@ releases:
       - values/cert-manager.yaml
 
   - name: akash-prometheus-stack
-    namespace: akash-c-a
+    namespace: akash-c-a-monitoring
+    createNamespace: true
     kubeContext: akash-c-a@kubenine
     chart: prometheus-community/kube-prometheus-stack
     version: 75.6.2
@@ -43,7 +45,8 @@ releases:
       - values/akash-prometheus-stack.yaml
 
   - name: akash-loki-stack
-    namespace: akash-c-a
+    namespace: akash-c-a-monitoring
+    createNamespace: true
     kubeContext: akash-c-a@kubenine
     chart: grafana/loki-stack
     version: 2.10.2

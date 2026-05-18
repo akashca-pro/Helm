@@ -8,9 +8,15 @@ grafana:
       access: proxy
       url: http://akash-loki-stack:3100
 
+    - name: Prometheus
+      uid: prometheus
+      type: prometheus
+      access: proxy
+      url: http://akash-prometheus-stack-kub-prometheus:9090
+      isDefault: true
+
   ingress:
     enabled: true
-
     ingressClassName: nginx
 
     hosts:
@@ -23,22 +29,44 @@ grafana:
 
   persistence:
     enabled: true
-
     size: 5Gi
 
-alertmanager:
+# Existing cluster CRDs already exist
+crds:
   enabled: false
 
-# Reuse the cluster-wide Prometheus Operator already running on Civo.
-# Deploying another operator in this shared cluster causes the Prometheus
-# statefulset to churn and prevents stable local port-forward access.
+# Reuse cluster-wide operator
 prometheusOperator:
   enabled: false
+
+alertmanager:
+  enabled: true
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    hosts:
+      - alertmanager.codexakash.space
+
+    tls:
+      - secretName: alertmanager-tls
+        hosts:
+          - alertmanager.codexakash.space
+
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
 
 prometheus:
   ingress:
     enabled: true
-
     ingressClassName: nginx
 
     hosts:
@@ -48,13 +76,13 @@ prometheus:
       - secretName: prometheus-tls
         hosts:
           - prometheus.codexakash.space
+
   prometheusSpec:
     storageSpec:
       volumeClaimTemplate:
         spec:
           accessModes:
             - ReadWriteOnce
-
           resources:
             requests:
               storage: 10Gi
