@@ -4,10 +4,8 @@ grafana:
   ingress:
     enabled: true
     ingressClassName: nginx
-
     hosts:
       - grafana.codexakash.space
-
     tls:
       - secretName: grafana-tls
         hosts:
@@ -17,24 +15,28 @@ grafana:
     enabled: true
     size: 5Gi
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 2Gi
+
 # Existing cluster CRDs already exist
 crds:
   enabled: false
 
-# Reuse cluster-wide operator
 prometheusOperator:
   enabled: false
 
 alertmanager:
   enabled: true
-
   ingress:
     enabled: true
     ingressClassName: nginx
-
     hosts:
       - alertmanager.codexakash.space
-
     tls:
       - secretName: alertmanager-tls
         hosts:
@@ -49,21 +51,27 @@ alertmanager:
           resources:
             requests:
               storage: 2Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 200Mi
+      limits:
+        cpu: 200m
+        memory: 500Mi
 
 prometheus:
   ingress:
     enabled: true
     ingressClassName: nginx
-
     hosts:
       - prometheus.codexakash.space
-
     tls:
       - secretName: prometheus-tls
         hosts:
           - prometheus.codexakash.space
 
   prometheusSpec:
+    scrapeInterval: 30s
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -72,6 +80,13 @@ prometheus:
           resources:
             requests:
               storage: 10Gi
+    resources:
+      requests:
+        cpu: 300m
+        memory: 2Gi
+      limits:
+        cpu: 1000m      # 1 core
+        memory: 6Gi
 
 nodeExporter:
   enabled: true
@@ -81,4 +96,13 @@ nodeExporter:
       memory: 150Mi
     limits:
       cpu: 200m
+      memory: 300Mi
+
+kubeStateMetrics:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 150Mi
+    limits:
+      cpu: 150m
       memory: 300Mi
