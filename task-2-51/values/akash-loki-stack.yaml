@@ -1,6 +1,9 @@
 grafana:
   enabled: false
 
+loki:
+  isDefault: false
+
 promtail:
   enabled: false
 

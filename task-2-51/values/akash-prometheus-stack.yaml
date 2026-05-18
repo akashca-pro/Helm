@@ -1,20 +1,6 @@
 grafana:
   adminPassword: admin123
 
-  additionalDataSources:
-    - name: Loki
-      uid: loki
-      type: loki
-      access: proxy
-      url: http://akash-loki-stack:3100
-
-    - name: Prometheus
-      uid: prometheus
-      type: prometheus
-      access: proxy
-      url: http://akash-prometheus-stack-kub-prometheus:9090
-      isDefault: true
-
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -88,7 +74,11 @@ prometheus:
               storage: 10Gi
 
 nodeExporter:
-  enabled: false
-
-prometheus-node-exporter:
-  enabled: false
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 150Mi
+    limits:
+      cpu: 200m
+      memory: 300Mi
