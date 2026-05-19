@@ -1,6 +1,16 @@
 grafana:
   adminPassword: admin123
 
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      uid: loki
+      access: proxy
+      url: http://akash-loki-stack.akash-c-a-monitoring.svc.cluster.local:3100
+      isDefault: false
+      jsonData:
+        maxLines: 1000
+
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -21,7 +31,8 @@ grafana:
       memory: 512Mi
     limits:
       cpu: 500m
-      memory: 2Gi
+      memory: 1536Mi
+
 
 # Existing cluster CRDs already exist
 crds:
@@ -29,9 +40,14 @@ crds:
 
 prometheusOperator:
   enabled: false
+  prometheusConfigReloader:
+    image:
+      tag: v0.91.0
+
 
 alertmanager:
   enabled: true
+
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -53,56 +69,71 @@ alertmanager:
               storage: 2Gi
     resources:
       requests:
-        cpu: 50m
-        memory: 200Mi
+        cpu: 20m
+        memory: 128Mi
       limits:
-        cpu: 200m
-        memory: 500Mi
+        cpu: 100m
+        memory: 256Mi
+
 
 prometheus:
   ingress:
     enabled: true
     ingressClassName: nginx
+
     hosts:
       - prometheus.codexakash.space
+
     tls:
       - secretName: prometheus-tls
         hosts:
           - prometheus.codexakash.space
 
   prometheusSpec:
-    scrapeInterval: 30s
+
+    scrapeInterval: 60s
+
+    retention: 24h
+
     storageSpec:
       volumeClaimTemplate:
         spec:
           accessModes:
             - ReadWriteOnce
+
           resources:
             requests:
               storage: 10Gi
+
     resources:
       requests:
-        cpu: 300m
-        memory: 2Gi
+        cpu: 200m
+        memory: 1Gi
+
       limits:
-        cpu: 1000m      # 1 core
-        memory: 6Gi
+        cpu: 1000m
+        memory: 2Gi
+
 
 nodeExporter:
-  enabled: true
+  enabled: false
+
   resources:
     requests:
-      cpu: 100m
-      memory: 150Mi
+      cpu: 20m
+      memory: 50Mi
+
     limits:
-      cpu: 200m
-      memory: 300Mi
+      cpu: 100m
+      memory: 100Mi
+
 
 kubeStateMetrics:
   resources:
     requests:
-      cpu: 50m
-      memory: 150Mi
+      cpu: 20m
+      memory: 50Mi
+
     limits:
-      cpu: 150m
-      memory: 300Mi
+      cpu: 100m
+      memory: 100Mi
